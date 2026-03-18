@@ -1,13 +1,10 @@
 import express from "express";
+import { Login, Signup } from "../controllers/auth.controller.js";
 
 const authRouter = express.Router();
 
-authRouter.get('/login',(req,res)=>{
-    res.status(200).json({ message: "Login successful" });
-})
-authRouter.get('/signup',(req,res)=>{
-    res.status(200).json({ message: "signup successful" });
-})
+authRouter.post('/login',Login)
+authRouter.post('/signup',Signup)
 authRouter.get('/update',(req,res)=>{
     res.status(200).json({ message: "update successful" });
 })
