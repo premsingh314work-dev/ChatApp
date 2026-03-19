@@ -15,3 +15,7 @@ export const GenerateJWT = (payload) => {
     });
   }
 };
+export const VerifyJWT = (token)=>{
+  const decoded = jwt.verify(token,secretKey);
+  return decoded;  
+}

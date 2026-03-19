@@ -11,10 +11,10 @@ const PORT = process.env.PORT || 3000;
 
 // app.use(cookieParser());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/api/auth',authRouter)
 app.use('/api/messages',messageRouter)
-app.use(cookieParser())
 
 app.listen(PORT,(req,res)=>{
     connectDB();
