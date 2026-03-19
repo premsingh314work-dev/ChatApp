@@ -20,11 +20,11 @@ const userSchema = new mongoose.Schema({
     },
     avatar:{
       type: String, // location of pfp.
-      default:""
+      default:null
     },
     phone:{
       type: String,
-      unique: true,
+    //   unique: true,
       default:null,
     },
     
