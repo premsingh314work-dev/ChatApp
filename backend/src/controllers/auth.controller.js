@@ -5,10 +5,10 @@ import { GenerateHashedPass, verifyPass } from "../utils/password.utils.js";
 import cloudinary from "../lib/cloudinary.js";
 
 export const Login = async (req, res) => {
-  const { phone, email, password } = req.body;
+  const { email, password } = req.body;
   try {
     const existingUser = await User.findOne({
-      $or: [{ email }, { phone }],
+      email 
     }).select("+password");
     if (!existingUser) {
       return res
