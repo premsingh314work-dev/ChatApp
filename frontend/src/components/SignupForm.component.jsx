@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { LoginAPI } from "../api/API.js";
+import { SignUpAPI } from "../api/API.js";
 import { useNavigate } from "react-router-dom";
 
-
-
-const LoginFormcomponent = () => {
-  const [Form, setForm] = useState({ email: "", password: "" });
+const SignupFormcomponent = () => {
+  const [Form, setForm] = useState({ FullName:"",email: "", password: "" });
   const [loading, setloading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -17,19 +15,17 @@ const LoginFormcomponent = () => {
     });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setloading(true);
     setError("");
     try {
-      const data= await LoginAPI(Form);
+      const data = await SignUpAPI(Form);
       console.log("Success:", data);
-      navigate('/');
+      navigate("/");
     } catch (err) {
-      setError(
-      err.response?.data?.message || "Something went wrong"
-    );
-    console.log("error: ",err.response?.data?.message);
+      setError(err.response?.data?.message || "Something went wrong");
+      console.log("error: ", err.response?.data?.message);
     } finally {
       setloading(false);
     }
@@ -39,12 +35,24 @@ const LoginFormcomponent = () => {
     <>
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
+          <label className="text-sm block mb-1">Full Name</label>
+          <input
+            type="text"
+            name="FullName"
+            value={Form.FullName}
+            onChange={handleChange}
+            required
+            placeholder="johndoe"
+            className="w-full px-4 py-2 rounded-md bg-slate-800 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+        <div>
           <label className="text-sm block mb-1">Email</label>
           <input
             type="email"
             name="email"
             value={Form.email}
-            onChange={ handleChange}
+            onChange={handleChange}
             required
             placeholder="johndoe@gmail.com"
             className="w-full px-4 py-2 rounded-md bg-slate-800 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -69,11 +77,10 @@ const LoginFormcomponent = () => {
           disabled={loading}
           className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 rounded-md font-semibold transition"
         >
-          {loading?"Logging in..":"Login"}
+          {loading ? "Logging in.." : "Login"}
         </button>
       </form>
     </>
   );
 };
-
-export default LoginFormcomponent;
+export default SignupFormcomponent;
