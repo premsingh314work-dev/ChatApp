@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { LoginAPI } from "../api/API.js";
-import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore.js";
 
 
 
 const LoginFormcomponent = () => {
+
+  const {isLoggingIn,login} =useAuthStore()
   const [Form, setForm] = useState({ email: "", password: "" });
-  const [loading, setloading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({
@@ -19,20 +17,11 @@ const LoginFormcomponent = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    setloading(true);
-    setError("");
-    try {
-      const data= await LoginAPI(Form);
-      console.log("Success:", data);
-      navigate('/');
-    } catch (err) {
-      setError(
-      err.response?.data?.message || "Something went wrong"
-    );
-    console.log("error: ",err.response?.data?.message);
-    } finally {
-      setloading(false);
-    }
+    const res = await login(Form);
+    if (res) {
+    navigate("/");
+  }
+
   };
 
   return (
@@ -66,10 +55,10 @@ const LoginFormcomponent = () => {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isLoggingIn}
           className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 rounded-md font-semibold transition"
         >
-          {loading?"Logging in..":"Login"}
+          {isLoggingIn?"Logging in..":"Login"}
         </button>
       </form>
     </>

@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { SignUpAPI } from "../api/API.js";
-import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore.js";
 
 const SignupFormcomponent = () => {
-  const [Form, setForm] = useState({ FullName:"",email: "", password: "" });
-  const [loading, setloading] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [Form, setForm] = useState({ fullName: "", email: "", password: "" });
+  const { isSigningUp, signup } = useAuthStore();
 
   const handleChange = (e) => {
     setForm({
@@ -17,18 +14,7 @@ const SignupFormcomponent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setloading(true);
-    setError("");
-    try {
-      const data = await SignUpAPI(Form);
-      console.log("Success:", data);
-      navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
-      console.log("error: ", err.response?.data?.message);
-    } finally {
-      setloading(false);
-    }
+    await signup(Form);
   };
 
   return (
@@ -38,8 +24,8 @@ const SignupFormcomponent = () => {
           <label className="text-sm block mb-1">Full Name</label>
           <input
             type="text"
-            name="FullName"
-            value={Form.FullName}
+            name="fullName"
+            value={Form.fullName}
             onChange={handleChange}
             required
             placeholder="johndoe"
@@ -74,10 +60,10 @@ const SignupFormcomponent = () => {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isSigningUp}
           className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 rounded-md font-semibold transition"
         >
-          {loading ? "Logging in.." : "Login"}
+          {isSigningUp ? "Signing in.." : "Signup"}
         </button>
       </form>
     </>
