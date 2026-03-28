@@ -8,17 +8,25 @@ export const Login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const existingUser = await User.findOne({
-      email 
+      email,
     }).select("+password");
     if (!existingUser) {
       return res
         .status(404)
         .json({ message: "Username or email is incorrect..." });
     }
-    const ismatch = verifyPass(password, existingUser.password);
+    const ismatch = await verifyPass(password, existingUser.password);
     if (ismatch) {
       setTokenCookie(res, existingUser._id);
-      return res.status(200).json({ message: "Login Successfull..." });
+      return res.status(200).json({
+        message: "Login Successfull...",
+        data: {
+          fullName: existingUser.fullName,
+          email: existingUser.email,
+          phone: existingUser.phone,
+          avatar: existingUser.avatar,
+        },
+      });
     } else {
       return res.status(401).json({ message: "Password is incorrect" });
     }
@@ -49,7 +57,15 @@ export const Signup = async (req, res) => {
     });
     await newUser.save();
     setTokenCookie(res, newUser._id);
-    res.status(201).json({ message: "Account Created" });
+    res.status(201).json({
+      message: "Account Created",
+      data: {
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        avatar: avatar,
+      },
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({
