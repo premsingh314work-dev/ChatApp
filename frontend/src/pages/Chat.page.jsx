@@ -1,46 +1,35 @@
-import React, { useEffect } from 'react'
-import { useAuthStore } from '../store/useAuthStore.js'
+import { useChatStore } from "../store/useChatStore";
 
-const ChatPage = () => {
-  const {authUser,logout} = useAuthStore();
-  useEffect(() => {
-    console.log ("ChatPage authUser: ", authUser);
-  }, [authUser]); 
-  
+import BorderAnimatedContainer from "../components/BorderAnimateContainer";
+import ProfileHeader from "../components/ProfleHeader";
+import ActiveTabSwitch from "../components/ActiveTabSwitch";
+import ChatsList from "../components/ChatsList";
+// import ContactList from "../components/ContactList";
+// import ChatContainer from "../components/ChatContainer";
+import NoConversationPlaceholder from "../components/NoConversationPlaceholder";
+
+function ChatPage() {
+  const { activeTab, selectedUser } = useChatStore();
+
   return (
-    <>
-    
-    <div className='bg-slate-900 h-screen w-screen flex justify-center items-center p-1'>        
-      
-      <div className='bg-red-400 h-[90%] w-[80%] flex'>
-        {/* Left side (LoggedInUser profile)(Chats | contacts) */}
-        <div className='bg-[#1b2839] h-full w-[25%] flex flex-col'>
-          {/* LoggedInuser profile */}
-          <div className='bg- h-[15%] w-full border-b border-white/10'>
+    <div className="relative w-full max-w-6xl h-200 p-20">
+      <BorderAnimatedContainer>
+        {/* LEFT SIDE */}
+        <div className="w-80 bg-slate-800/50 backdrop-blur-sm flex flex-col">
+          <ProfileHeader />
+          <ActiveTabSwitch />
 
+          <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            {activeTab === "chats" ? <ChatsList /> : <ContactList />}
           </div>
-          {/* div (chats|contact) */}
-          <div className='w-full h-[10%] flex gap-5 justify-center items-center text-[#1c849b]'>
-            <button className='bg-[#16495c] h-auto w-[50%] ml-5 p-1 rounded-xl cursor-pointer' type="button">Chats</button>
-            <button className='bg-[#16495c] h-auto w-[50%] mr-5 p-1 rounded-xl cursor-pointer' type="button">Contacts</button>
-          </div>
-          {/* Other users */}
-          <div className='bg-gray-400 w-full h-[75%]'>
-
-          </div>
-
-
         </div>
-        
-        {/* Right side (selscted chats || Nothing to show  ) */}
-        <div className='bg-amber-500 h-full w-[75%]'></div>
 
-
-      </div>
-  
+        {/* RIGHT SIDE */}
+        <div className="flex-1 flex flex-col bg-slate-900/50 backdrop-blur-sm">
+          {selectedUser ? <ChatContainer /> : <NoConversationPlaceholder />}
+        </div>
+      </BorderAnimatedContainer>
     </div>
-    </>
-  )
+  );
 }
-
-export default ChatPage
+export default ChatPage;

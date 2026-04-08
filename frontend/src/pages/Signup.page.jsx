@@ -4,8 +4,8 @@ import SignupFormcomponent from "../components/SignupForm.component";
 import { Link } from "react-router-dom";
 const SignupPage = () => {
   return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 to-slate-800">
-        <div className="w-225 h-125 bg-slate-900 rounded-xl overflow-hidden shadow-lg flex ">
+    <div className="flex items-center justify-center bg-linear-to-br from-slate-900 to-slate-800 ">
+      <div className="relative w-225 h-125  rounded-xl overflow-hidden shadow-lg flex">
           {/* LEFT SIDE */}
           <div className="w-1/2 p-10 flex flex-col justify-center text-white border-slate-800 border-r">
             <div className="flex flex-col justify-center items-center">

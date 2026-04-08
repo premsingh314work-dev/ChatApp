@@ -12,10 +12,17 @@ export const SignUpAPI = async (formdata) => {
 
 export const checkAuthAPI = async () => {
   const res = await axiosInstance.get("/auth/check");
-  return res.data
+  return res.data;
+};
+export const GetAllContactsAPI = async () => {
+  const res = await axiosInstance.get("/messages/contacts");
+  return res.data;
+};
+export const GetMyChatPartnersAPI = async () => {
+  const res = await axiosInstance.get("/messages/chats");
+  return res.data;
 };
 
-export const LogoutAPI = async()=>{
-    const res = await axiosInstance.get('/auth/logout');
-}
-
+export const LogoutAPI = async () => {
+  const res = await axiosInstance.get("/auth/logout");
+};

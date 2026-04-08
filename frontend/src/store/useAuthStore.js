@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { checkAuthAPI, SignUpAPI,LoginAPI, LogoutAPI } from "../api/API";
 import { toast } from "react-hot-toast";
+import { axiosInstance } from "../lib/axios";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -57,6 +58,19 @@ export const useAuthStore = create((set, get) => ({
     }catch(err){
         toast.error("Error logging out");
         console.log("Logout Error:",err);
+    }
+  },
+
+  updateProfile :async(data)=>{
+    try{
+      console.log("updateprofile Api called");
+      
+      const res = await axiosInstance.put("/auth/update-profile",data)
+      set({authUser:res.data});
+      toast.success("profile Updated successfully");
+    }catch(err){
+      console.log("error in update profile:",err);
+      toast.error(err?.response?.data?.message);
     }
   }
 }));

@@ -83,7 +83,7 @@ export const UpadateUser = async (req, res) => {
       return res.status(400).json({ message: "Profile pic is required." });
     const userId = req.user._id;
 
-    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    const uploadResponse = await cloudinary.uploader.upload(profilePic, { folder: 'Chatting_App' });
     const updateduser = await User.findByIdAndUpdate(
       userId,
       { avatar: uploadResponse.secure_url },
