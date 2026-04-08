@@ -39,7 +39,7 @@ export const useChatStore = create((set, get) => ({
      set({ isUserLoading: true });
     try {
       const res = await GetMyChatPartnersAPI();
-      set({ allContacts: res });
+      set({ chats: res });
     } catch (err) {
         toast.error(err?.response?.data?.messages)
     } finally {
