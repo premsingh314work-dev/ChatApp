@@ -10,7 +10,9 @@ import { arcjetProtection } from "../middlewares/arcjet.middleware.js";
 
 const messageRouter = express.Router();
 
-messageRouter.use(arcjetProtection,protectRoute);
+messageRouter.use(
+  arcjetProtection,
+  protectRoute);
 
 messageRouter.get("/contacts", getAllContacts);
 messageRouter.get("/chats", getChatPartners);
