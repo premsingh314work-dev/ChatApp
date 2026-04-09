@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { GetAllContactsAPI,GetMyChatPartnersAPI } from "../api/API.js";
 import toast from "react-hot-toast";
+import { axiosInstance } from "../lib/axios.js";
 
 export const useChatStore = create((set, get) => ({
   allContacts: [],
@@ -46,4 +47,17 @@ export const useChatStore = create((set, get) => ({
       set({ isUserLoading: false });
     }
   },
+  getMessagesByUserId: async(userId)=>{
+    try{
+      set({isMessagesLoading:true});
+      const res = await axiosInstance.get(`/messages/${userId}`);
+      // console.log(res.data);
+      set({messages:res.data});
+    }catch(err){
+      console.log(err);
+      toast.error(err.response?.data?.message ||"Something went wrong");
+    }finally{
+      set({isMessagesLoading:false});
+    }
+  }
 }));
