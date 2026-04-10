@@ -65,17 +65,22 @@ export const sendMessage = async (req, res) => {
 
     let imageUrl;
     if (image) {
-      // upload it to the cloudinary
-      const uploadResponse = await cloudinary.uploader.upload(image, {
-        folder: "Chatting_App",
-      });
-      imageUrl = uploadResponse.secure_url;
+      try {
+        // upload it to the cloudinary
+        const uploadResponse = await cloudinary.uploader.upload(image, {
+          folder: "Chatting_App",
+        });
+        imageUrl = uploadResponse.secure_url;
+      } catch (uploadErr) {
+        console.error("Cloudinary upload error:", uploadErr);
+        return res.status(500).json({ message: "Failed to upload image" });
+      }
     }
     const newMessage = new Message({
       senderId,
       reciverId,
       text,
-      iage: imageUrl,
+      Image: imageUrl,
     });
     await newMessage.save();
     // todo : send message in real-time if user is online
