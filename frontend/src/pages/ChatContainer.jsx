@@ -1,4 +1,4 @@
-import React, { useEffect,useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import ChatHeader from "../components/ChatHeader";
 import NoChatHistoryPlaceholder from "../components/NoChatHistoryPlaceholder";
@@ -12,10 +12,16 @@ const ChatContainer = () => {
   const { authUser } = useAuthStore();
 
   const messageEndRef = useRef(null);
+
   useEffect(() => {
     getMessagesByUserId(selectedUser._id);
   }, [selectedUser, getMessagesByUserId]);
 
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
   return (
     <>
       <ChatHeader />
@@ -34,9 +40,9 @@ const ChatContainer = () => {
                       : "bg-slate-800 text-slate-200"
                   }`}
                 >
-                  {msg.image && (
+                  {msg.Image && (
                     <img
-                      src={msg.image}
+                      src={msg.Image}
                       alt="Shared"
                       className="rounded-lg h-48 object-cover"
                     />
@@ -61,7 +67,7 @@ const ChatContainer = () => {
         )}
       </div>
 
-      <MessageInput/>
+      <MessageInput />
     </>
   );
 };
