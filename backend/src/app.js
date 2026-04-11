@@ -5,9 +5,10 @@ import messageRouter from "./routers/messages.route.js";
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from 'cors';
+import { app ,server} from "./lib/socket.js";
 
 dotenv.config();
-const app = express();
+
 const PORT = process.env.PORT || 3000;
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -23,7 +24,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
 
-app.listen(PORT, (req, res) => {
+server.listen(PORT, (req, res) => {
   connectDB();
   console.log(`Server is running on port ${PORT}`);
 });
