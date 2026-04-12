@@ -5,7 +5,7 @@ import { axiosInstance } from "../lib/axios";
 import { io } from "socket.io-client";
 
 const BASE_URL =
-  import.meta.env.MODE === "development" ? "http://localhost:3000" : "https://chat-app-ebon-one-41.vercel.app/";
+  import.meta.env.MODE === "development" ? "http://localhost:3000" : "https://chatapp-05al.onrender.com";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
