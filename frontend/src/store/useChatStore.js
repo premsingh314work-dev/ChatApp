@@ -5,6 +5,9 @@ import { axiosInstance } from "../lib/axios.js";
 import { Candy } from "lucide-react";
 import { useAuthStore } from "./useAuthStore.js";
 
+
+const notificationSound=new Audio("/sounds/notification.mp3")
+
 export const useChatStore = create((set, get) => ({
   allContacts: [],
   chats: [],
@@ -89,4 +92,22 @@ export const useChatStore = create((set, get) => ({
       toast.error(err.response?.data?.message || "Something went wrong");
     }
   },
+  subscribeToMessage:()=>{
+    const {selectedUser,isSoundEnabled} =get();
+    if (!selectedUser) return;
+    const socket = useAuthStore.getState().socket;
+
+    socket.on("newMessage",(newMessage)=>{
+      const currentMessages = get().messages;
+      set({messages:[...currentMessages,newMessage]});
+      if(isSoundEnabled){
+        notificationSound.currentTime =0;
+        notificationSound.play().catch((e)=>console.log("Audio Play failed:", e));
+      }
+    })
+  },
+  unsubscribeFromMessages:()=>{
+    const socket = useAuthStore.getState().socket;
+    socket.off("newMessage");
+  }
 }));

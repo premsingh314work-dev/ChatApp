@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import cors from 'cors';
 import { app ,server} from "./lib/socket.js";
 
+
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
@@ -24,7 +25,16 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
 
-server.listen(PORT, (req, res) => {
-  connectDB();
-  console.log(`Server is running on port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    server.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server because MongoDB connection failed.", err);
+    process.exit(1);
+  }
+};
+
+startServer();
