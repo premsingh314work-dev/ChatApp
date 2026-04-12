@@ -1,12 +1,11 @@
-import express, { json } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import authRouter from "./routers/auth.route.js";
 import messageRouter from "./routers/messages.route.js";
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
-import cors from 'cors';
-import { app ,server} from "./lib/socket.js";
-
+import cors from "cors";
+import { app, server } from "./lib/socket.js";
 
 dotenv.config();
 
@@ -19,7 +18,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
@@ -29,11 +28,10 @@ const startServer = async () => {
   try {
     await connectDB();
     server.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
-  } catch (err) {
-    console.error("Failed to start server because MongoDB connection failed.", err);
-    process.exit(1);
+  } catch (error) {
+    console.error("❌ Failed to start server:", error.message);
   }
 };
 
