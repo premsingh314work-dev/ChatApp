@@ -1,26 +1,33 @@
-import express from "express";
+import type { Response } from "express";
 import { GenerateJWT } from "./jwt.utils.js";
+
 const isProduction = process.env.NODE_ENV === "production";
 
-export const setTokenCookie = (res, userid) => {
+export const setTokenCookie = (res: Response, userid: string): string => {
   const payload = {
     _id: userid,
   };
+
   const jwtToken = GenerateJWT(payload);
+
   res.cookie("token_jwt", jwtToken, {
     httpOnly: true,
-    secure: isProduction, // only HTTPS in production
+    secure: isProduction,
     sameSite: isProduction ? "none" : "lax",
-    maxAge: 24 * 60 * 60 * 1000, //1Day
+    maxAge: 24 * 60 * 60 * 1000,
   });
+
   return jwtToken;
 };
 
-export const RemoveCookie = (res) => {
+export const RemoveCookie = (res: Response): Response => {
   res.clearCookie("token_jwt", {
     httpOnly: true,
-    secure: isProduction, // only HTTPS in production
+    secure: isProduction,
     sameSite: isProduction ? "none" : "lax",
   });
-  return res.status(200).json({message:"Logout successfully..."})
+
+  return res.status(200).json({
+    message: "Logout successfully...",
+  });
 };
