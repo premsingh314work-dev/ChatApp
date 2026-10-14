@@ -6,6 +6,7 @@ import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { app, server } from "./lib/socket.js";
+import friendRouter from "./routers/friends.route.js";
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === "production";
@@ -17,6 +18,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/friends", friendRouter);
 const startServer = async () => {
     try {
         await connectDB();

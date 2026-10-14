@@ -8,14 +8,14 @@ export const Login = async (req, res) => {
         const existingUser = await User.findOne({ email }).select("+password");
         if (!existingUser) {
             res.status(404).json({
-                message: "Username or email is incorrect...",
+                error: "Username or email is incorrect...",
             });
             return;
         }
         const isMatch = await verifyPass(password, existingUser.password);
         if (!isMatch) {
             res.status(401).json({
-                message: "Password is incorrect",
+                error: "Username or email is incorrect...",
             });
             return;
         }
@@ -33,17 +33,22 @@ export const Login = async (req, res) => {
     catch (err) {
         console.error("Error in Login:", err);
         res.status(500).json({
-            message: "Internal server error",
+            error: "Internal server error",
         });
     }
 };
 export const Signup = async (req, res) => {
     const { fullName, email, password, phone, avatar } = req.body;
+    if (!fullName || !email || !password) {
+        return res.status(401).json({
+            error: "Please fill every field...",
+        });
+    }
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             res.status(409).json({
-                message: "Email already existed...",
+                error: "Email already existed...",
             });
             return;
         }
@@ -70,7 +75,7 @@ export const Signup = async (req, res) => {
     catch (err) {
         console.error("Error in Signup:", err);
         res.status(500).json({
-            message: "Internal server error",
+            error: "Internal server error",
         });
     }
 };

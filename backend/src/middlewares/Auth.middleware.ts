@@ -27,6 +27,7 @@ export const protectRoute = async (
       return;
     }
     req.user = user;
+    // console.log(req.user);
     next();
   } catch (err: unknown) {
     console.error("Error in protectRoute middleware", err);

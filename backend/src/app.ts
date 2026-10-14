@@ -6,6 +6,7 @@ import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { app, server } from "./lib/socket.js";
+import friendRouter from "./routers/friends.route.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/friends", friendRouter);
 
 const startServer = async (): Promise<void> => {
   try {
