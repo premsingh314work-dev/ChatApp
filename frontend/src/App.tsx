@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Loginpage from "./pages/Login.page";
 import "./App.css";
 import ChatPage from "./pages/Chat.page";

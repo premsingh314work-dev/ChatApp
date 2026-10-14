@@ -1,38 +1,42 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 import NoChatsFound from "./NoChatsFound";
 import UsersLoadingSkeleton from "./UserLoadingSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
-const ContactsList = () => {
-  const { getAllContacts, allContacts, isUserLoading, setSelectecUser } =
+
+const ChatsList = () => {
+  const { getMyChatPartners, chats, isUserLoading, setSelectecUser } =
     useChatStore();
-    const {onlineUsers}=useAuthStore()
+
+  const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
-    getAllContacts();
-  }, [getAllContacts]);
+    getMyChatPartners();
+  }, [getMyChatPartners]);
   if (isUserLoading) return <UsersLoadingSkeleton />;
-  if (allContacts.length === 0) return <NoChatsFound />;
+  if (chats.length === 0) return <NoChatsFound />;
   return (
     <>
-      {allContacts.map((contact) => (
+      {chats.map((chat) => (
         <div
-          key={contact._id}
+          key={chat._id}
           className="bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors"
           onClick={() => {
-            setSelectecUser(contact);
+            setSelectecUser(chat);
           }}
         >
           <div className="flex items-center gap-5">
             {/* Profile Image div */}
-            <div className={`avatar ${onlineUsers.includes(contact._id)?"avatar-online":"avatar-offline"}`}>
+            <div
+              className={`avatar ${onlineUsers.includes(chat._id)?"avatar-online":"avatar-offline"}`}
+            >
               <div className="w-13 rounded-full">
-                <img src={contact.avatar || "avatar.png"} />
+                <img src={chat.avatar || "avatar.png"} />
               </div>
             </div>
             {/* Name etc div */}
             <h4 className="text-slate-200 font-medium truncate">
-              {contact.fullName}
+              {chat.fullName}
             </h4>
           </div>
         </div>
@@ -41,4 +45,4 @@ const ContactsList = () => {
   );
 };
 
-export default ContactsList;
+export default ChatsList;
