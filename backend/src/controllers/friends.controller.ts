@@ -2,7 +2,6 @@ import type { RequestHandler } from "express";
 import { Friendship } from "../models/Friendship.model.js";
 import User from "../models/user.model.js";
 import { Types } from "mongoose";
-import { error } from "node:console";
 
 const makePairKey = (a: string, b: string): string => [a, b].sort().join("_");
 
@@ -38,12 +37,42 @@ export const sendFriendRequest: RequestHandler = async (req, res) => {
 
     const pairKey = makePairKey(recipientId.toString(), requesterId.toString());
 
-    const existing = await Friendship.findOne({ pairKey }).select("_id");
+    const existing = await Friendship.findOne({ pairKey }).select(
+      "status requester",
+    );
+
     if (existing) {
-      res
-        .status(409)
-        .json({ error: "A request or friendship already exists." });
-      return;
+      if (existing.status === "accepted") {
+        res.status(409).json({ error: "You are already friends." });
+        return;
+      }
+      if (existing.status === "blocked") {
+        // generic message so a blocked user can't tell they're blocked
+        res.status(404).json({ error: "Receiver not found." });
+        return;
+      }
+      if (existing.status === "pending") {
+        if (existing.requester.equals(requesterId)) {
+          res.status(409).json({ error: "Request already sent." });
+          return;
+        }
+        // they already sent me one, so accept it
+        await Friendship.updateOne(
+          { _id: existing._id, status: "pending" },
+          { status: "accepted" },
+        );
+        res.status(200).json({ message: "Friend request accepted." });
+        return;
+      }
+      if (existing.status === "declined") {
+        // re-open it (add a cooldown here if want anti-spam)
+        await Friendship.updateOne(
+          { _id: existing._id, status: "declined" },
+          { requester: requesterId, recipient: recipientId, status: "pending" },
+        );
+        res.status(201).json({ message: "Friend request sent." });
+        return;
+      }
     }
 
     const friendRequest = await Friendship.create({
@@ -99,7 +128,7 @@ export const getFriends: RequestHandler = async (req, res) => {
 
     // 2) pick the other person from each friendship
     const friendIds = friendships.map(
-      (f) => f.users.find((id) => !id.equals(user))!,
+      (f) => f.users?.find((id) => !id.equals(user))!,
     );
 
     // 3) fetch those users in one query
@@ -196,9 +225,9 @@ export const DeclineRequest: RequestHandler = async (req, res) => {
     // Optional: emit to the original requester via Socket.IO here
     // io.to(friendship.requester.toString()).emit("friend:accepted", { ... });
 
-    res.json({ message: "Friend request accepted." });
+    res.json({ message: "Friend request declined." });
   } catch (err) {
-    console.error("acceptFriendRequest failed:", err);
+    console.error("DeclineFriendRequest failed:", err);
     res.status(500).json({ error: "Something went wrong." });
   }
 };
@@ -261,7 +290,8 @@ export const removeFriend: RequestHandler = async (req, res) => {
     return;
   }
   try {
-    const pairKey = makePairKey(me.toString(), userId);
+    const otherId = new Types.ObjectId(userId).toString();
+    const pairKey = makePairKey(me.toString(), otherId);
     const deleted = await Friendship.findOneAndDelete({
       pairKey: pairKey,
       status: "accepted",
@@ -270,6 +300,7 @@ export const removeFriend: RequestHandler = async (req, res) => {
       res.status(404).json({ error: "Friendship not found." });
       return;
     }
+
     //todo
     // io.to(userId).emit("friend:removed", { userId: me.toString() });
 

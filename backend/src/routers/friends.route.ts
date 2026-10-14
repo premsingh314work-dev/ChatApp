@@ -30,6 +30,6 @@ friendRouter.delete("/:userId", protectRoute, removeFriend);
 friendRouter.patch("/requests/:id/accept", protectRoute, AcceptRequest);
 
 // /friends/requests/:id/decline
-friendRouter.patch("/requests/:id/accept", protectRoute, DeclineRequest);
+friendRouter.patch("/requests/:id/decline", protectRoute, DeclineRequest);
 
 export default friendRouter;
